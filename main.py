@@ -19,6 +19,12 @@ def display_player():
     screen.fill(black)
     #pygame.draw.circle(screen,white,(playerXpos,playerYpos),100)
     pygame.draw.rect(screen, white, (playerXpos, playerYpos, 300, 300))
+
+def movebykey(speed):
+    global
+
+def func():
+
 while True:
     clock.tick(60)
     for event in pygame.event.get():
