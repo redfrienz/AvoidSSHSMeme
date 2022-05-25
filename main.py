@@ -1,6 +1,7 @@
 import pygame
 import sys
 
+
 pygame.init()
 
 SCREEN_WIDTH = 1920
@@ -50,6 +51,20 @@ def movebykey(speed):
     if key_event[pygame.K_RIGHT]:
         playerXpos += speed
 
+def spell_check():
+    key_event = pygame.key.get_pressed()
+    if key_event[pygame.K_d] and spell[0]!=-1:
+        use_spell(spell[0])
+        spell[0] = -1
+    if key_event[pygame.K_f] and spell[1]!=-1:
+        use_spell(spell[1])
+        spell[0] = -1
+# def use_spell(spell_num):
+#     # if spell_num == 0:
+#     # elif spell_num == 1:
+#     # elif spell_num == 2:
+#     # elif spell_num == 3:
+#     # elif spell_num == 4:
 
 def vel():
     global playerXpos, playerYpos, velocity, jump_time, up_key_pressed
@@ -90,7 +105,10 @@ def display_score():
 
 def display_health():
     global hp
-    pygame.draw.rect(screen,red,(100,100,50*hp,50))
+    hpx = 100
+    for i in range(hp):
+        pygame.draw.rect(screen,red,(hpx,100,50,50))
+        hpx += 60
 
 def display_spell():
     global spell
