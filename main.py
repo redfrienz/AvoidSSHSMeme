@@ -5,11 +5,11 @@ pygame.init()
 
 SCREEN_WIDTH = 1920
 SCREEN_HEIGHT = 1080
-SIZE=90
+SIZE=50
 velocity=0
+jump_time = 0
 white = (255,255,255)
 black = (0,0,0)
-#asdf
 playerXpos = 800
 playerYpos = 400
 
@@ -21,7 +21,9 @@ def display_player():
     screen.fill(black)
     #pygame.draw.circle(screen,white,(playerXpos,playerYpos),100)
     pygame.draw.rect(screen, white, (playerXpos, playerYpos, SIZE, SIZE))
-    pygame.draw.rect(screen, white, (0, 1030, 1920, 50))
+    pygame.draw.rect(screen, white, (0, 1030, 1920, 20))
+    pygame.draw.rect(screen, white, (-20, 0, 20, 1080))
+    pygame.draw.rect(screen, white, (1920, 0, 20, 1080))
 
 def movebykey(speed):
     global playerXpos, playerYpos, velocity
@@ -37,10 +39,12 @@ def movebykey(speed):
     stayinside()
 
 def vel():
-    global playerXpos, playerYpos, velocity
+    global playerXpos, playerYpos, velocity, jump_time
     key_event = pygame.key.get_pressed()
     if key_event[pygame.K_UP]:
-         velocity += 5
+         if jump_time >0:
+            velocity = 20
+            jump_time = 0
     velocity -= 1
 
 def movebyvelocity(v):
@@ -48,10 +52,17 @@ def movebyvelocity(v):
     playerYpos -= v
 
 def stayinside():
-    global playerXpos, playerYpos, velocity
-    if playerYpos >= 940:
-        playerYpos -= velocity
+    global playerXpos, playerYpos, velocity, jump_time
+    if playerYpos > 1030-SIZE:
+        playerYpos = 1030-SIZE
+        jump_time = 2
+    if playerYpos < 0:
+        playerYpos = 0
         velocity = 0
+    if playerXpos > SCREEN_WIDTH-SIZE:
+        playerXpos = SCREEN_WIDTH-SIZE
+    if playerXpos < 0:
+        playerXpos = 0
 
 while True:
     clock.tick(60)
