@@ -9,9 +9,13 @@ SIZE=50
 velocity=0
 jump_time = 0
 max_jump_time = 3
+player_speed = 20
+
 white = (255,255,255)
 red = (255,0,0)
 black = (0,0,0)
+yellow = (255,255,0)
+
 playerXpos = 800
 playerYpos = 400
 up_key_pressed = False
@@ -19,6 +23,10 @@ bgm = pygame.mixer.Sound("audio/Super Mario Galaxy - Buoy Base Galaxy [Remix].mp
 score = 0
 game_font1 = pygame.font.Font("fonts/PressStart2P-vaV7.ttf",50)
 hp = 5
+spell = [0,1] #0 초시계 1 점멸 2 유체화 3 회복 4 방어막 수정 끝나면 -1 -1로 초기화해
+
+spell_img = [pygame.image.load("images/stopwatch.jpg"), pygame.image.load("images/blink.png"),pygame.image.load("images/ghost.png"),pygame.image.load("images/heal.png"),pygame.image.load("images/barrier.png")]
+
 score_tick = 1
 
 pygame.display.set_caption("설곽 밈 피하기")
@@ -84,6 +92,12 @@ def display_health():
     global hp
     pygame.draw.rect(screen,red,(100,100,50*hp,50))
 
+def display_spell():
+    global spell
+    if spell[0] != -1:
+        screen.blit(pygame.transform.scale(spell_img[spell[0]],(50,50)),(100,160))
+    if spell[1] != -1:
+        screen.blit(pygame.transform.scale(spell_img[spell[1]],(50,50)),(160,160))
 
 bgm.play(-1)
 while True:
@@ -92,10 +106,11 @@ while True:
         if event.type == pygame.QUIT:
             sys.exit()
     score += score_tick
-    movebykey(20)
+    movebykey(player_speed)
     display_player()
     display_score()
     display_health()
+    display_spell()
     vel()
     movebyvelocity(velocity)
     stayinside()
