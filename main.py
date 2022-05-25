@@ -14,6 +14,7 @@ black = (0,0,0)
 playerXpos = 800
 playerYpos = 400
 up_key_pressed = False
+bgm = pygame.mixer.Sound("audio/Super Mario Galaxy - Buoy Base Galaxy [Remix].mp3")
 
 pygame.display.set_caption("설곽 밈 피하기")
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
@@ -69,6 +70,7 @@ def stayinside():
     if playerXpos < 0:
         playerXpos = 0
 
+bgm.play(-1)
 while True:
     clock.tick(60)
     for event in pygame.event.get():
