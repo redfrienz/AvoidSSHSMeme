@@ -1,6 +1,7 @@
 import pygame
 import sys
-import datetime
+import time
+from threading import Thread
 
 pygame.init()
 
@@ -9,7 +10,7 @@ SCREEN_HEIGHT = 1080
 SIZE=50
 velocity=0
 jump_time = 0
-max_jump_time = 3
+max_jump_time = 2
 player_speed = 20
 
 white = (255,255,255)
@@ -27,9 +28,9 @@ bgm = pygame.mixer.Sound("audio/Super Mario Galaxy - Buoy Base Galaxy [Remix].mp
 score = 0
 game_font1 = pygame.font.Font("fonts/PressStart2P-vaV7.ttf",50)
 hp = 5
-spell = [0,1] #0 초시계 1 점멸 2 유체화 3 회복 4 방어막 수정 끝나면 -1 -1로 초기화해
+spell = [2,1] #0 초시계 1 점멸 2 유체화 3 회복 4 방어막 수정 끝나면 -1 -1로 초기화해
 player_rigid = False
-player_invinsible = False
+player_invincible = False
 
 spell_img = [pygame.image.load("images/stopwatch.jpg"), pygame.image.load("images/blink.png"),pygame.image.load("images/ghost.png"),pygame.image.load("images/heal.png"),pygame.image.load("images/barrier.png")]
 
@@ -59,10 +60,16 @@ def movebykey(speed):
 def spell_check():
     key_event = pygame.key.get_pressed()
     if key_event[pygame.K_d] and spell[0]!=-1:
-        use_spell(spell[0])
+        args1 = []
+        args1.append(spell[0])
+        sth1 = Thread(target=use_spell,args=tuple(args1))
+        sth1.start()
         spell[0] = -1
     if key_event[pygame.K_f] and spell[1]!=-1:
-        use_spell(spell[1])
+        args2 = []
+        args2.append(spell[1])
+        sth2 = Thread(target=use_spell,args=tuple(args2))
+        sth2.start()
         spell[1] = -1
 def use_spell(spell_num):
     global player_color, player_rigid, player_speed, hp, player_invincible
@@ -70,18 +77,16 @@ def use_spell(spell_num):
         tmp = player_color
         player_color = yellow
         player_rigid = True
-        t1 = datetime.datetime.now()
-        while True:
-            t2 = datetime.datetime.now()
-            if (t2-t1).seconds > 2.5:
-                break
+        player_invincible = True
+        time.sleep(2.5)
         player_color = tmp
         player_rigid = False
+        player_invincible = False
     elif spell_num == 1:
         key_event = pygame.key.get_pressed()
         # if key_event[pygame.K_LEFT] and key_event[pygame.K_UP]:
     elif spell_num == 2:
-        player_speed = 30
+        player_speed = 40
         time.sleep(5)
         player_speed = 20
     elif spell_num == 3:
@@ -140,23 +145,32 @@ def display_spell():
     if spell[1] != -1:
         screen.blit(pygame.transform.scale(spell_img[spell[1]],(50,50)),(160,160))
 
-bgm.play(-1)
-while True:
-    clock.tick(60)
+def add_score():
+    global score
+    score += score_tick
+
+def check_quit():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-    score += score_tick
+if __name__ == '__main__':
+    bgm.play(-1)
+    while True:
+        clock.tick(60)
 
-    stayinside()
+        check_quit()
+        add_score()
 
-    movebykey(player_speed)
-    vel()
-    movebyvelocity(velocity)
+        stayinside()
+        if not player_rigid:
+            movebykey(player_speed)
+            vel()
+            movebyvelocity(velocity)
 
-    display_player()
-    display_score()
-    display_health()
-    display_spell()
-    spell_check()
-    pygame.display.update()
+        display_player()
+        display_score()
+        display_health()
+        display_spell()
+        th1 = Thread(target=spell_check)
+        th1.start()
+        pygame.display.update()
