@@ -2,6 +2,7 @@ import pygame
 import sys
 import time
 import math
+import random
 from threading import Thread
 
 pygame.init()
@@ -9,6 +10,7 @@ pygame.init()
 SCREEN_WIDTH = 1920
 SCREEN_HEIGHT = 1080
 SIZE=50
+STAGENUM = 15
 velocity=0
 jump_time = 0
 max_jump_time = 2
@@ -42,7 +44,6 @@ score_tick = 1
 pygame.display.set_caption("설곽 밈 피하기")
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
 clock = pygame.time.Clock()
-
 
 def display_player():
     screen.fill(black)
@@ -181,8 +182,24 @@ def check_quit():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
+
+def random_spell():
+    while True:
+        #추가바람
+
+def stage_loop():
+    while True:
+        stage_num = random.randint(1,STAGENUM)
+        stage(stage_num)
+
+def stage(stage_num):
+    #추가바람
 if __name__ == '__main__':
     bgm.play(-1)
+    th2 = Thread(target=stage_loop)
+    th2.start()
+    th3 = Thread(target=random_spell)
+    th3.start()
     while True:
         clock.tick(60)
 
@@ -202,4 +219,5 @@ if __name__ == '__main__':
         display_barrier()
         th1 = Thread(target=spell_check)
         th1.start()
+
         pygame.display.update()
