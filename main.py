@@ -32,7 +32,7 @@ spell_sound = [pygame.mixer.Sound("audio/stopwatch.mp3"),pygame.mixer.Sound("aud
 score = 0
 game_font1 = pygame.font.Font("fonts/PressStart2P-vaV7.ttf",50)
 hp = 5
-spell = [0,1] #0 초시계 1 점멸 2 유체화 3 회복 4 방어막 수정 끝나면 -1 -1로 초기화해
+spell = [1,0] #0 초시계 1 점멸 2 유체화 3 회복 4 방어막 수정 끝나면 -1 -1로 초기화해
 player_rigid = False
 player_invincible = False
 blink_distance = 300
@@ -183,35 +183,36 @@ def check_quit():
         if event.type == pygame.QUIT:
             sys.exit()
 
-def random_spell():
-    while True:
-        #추가바람
-
-def stage_loop():
-    while True:
-        stage_num = random.randint(1,STAGENUM)
-        stage(stage_num)
-
-def stage(stage_num):
-    #추가바람
+# def random_spell():
+#     while True:
+#         #추가바람
+#
+# def stage_loop():
+#     while True:
+#         stage_num = random.randint(1,STAGENUM)
+#         stage(stage_num)
+#
+# def stage(stage_num):
+#     #추가바람
 if __name__ == '__main__':
     bgm.play(-1)
-    th2 = Thread(target=stage_loop)
-    th2.start()
-    th3 = Thread(target=random_spell)
-    th3.start()
+    # th2 = Thread(target=stage_loop)
+    # th2.start()
+    # th3 = Thread(target=random_spell)
+    # th3.start()
     while True:
         clock.tick(60)
 
         check_quit()
         add_score()
 
-        stayinside()
+
         if not player_rigid:
             movebykey(player_speed)
             vel()
             movebyvelocity(velocity)
 
+        stayinside()
         display_player()
         display_score()
         display_health()
