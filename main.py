@@ -8,6 +8,7 @@ SCREEN_HEIGHT = 1080
 SIZE=50
 velocity=0
 jump_time = 0
+max_jump_time = 2
 white = (255,255,255)
 black = (0,0,0)
 playerXpos = 800
@@ -56,10 +57,10 @@ def movebyvelocity(v):
     playerYpos -= v
 
 def stayinside():
-    global playerXpos, playerYpos, velocity, jump_time
+    global playerXpos, playerYpos, velocity, jump_time, max_jump_time
     if playerYpos > 1030-SIZE:
         playerYpos = 1030-SIZE
-        jump_time = 2
+        jump_time = max_jump_time
     if playerYpos < 0:
         playerYpos = 0
         velocity = 0
