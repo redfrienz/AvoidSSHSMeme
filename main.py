@@ -1,6 +1,6 @@
 import pygame
 import sys
-
+import datetime
 
 pygame.init()
 
@@ -16,15 +16,20 @@ white = (255,255,255)
 red = (255,0,0)
 black = (0,0,0)
 yellow = (255,255,0)
+green = (0,255,0)
+
 
 playerXpos = 800
 playerYpos = 400
+player_color = white
 up_key_pressed = False
 bgm = pygame.mixer.Sound("audio/Super Mario Galaxy - Buoy Base Galaxy [Remix].mp3")
 score = 0
 game_font1 = pygame.font.Font("fonts/PressStart2P-vaV7.ttf",50)
 hp = 5
 spell = [0,1] #0 초시계 1 점멸 2 유체화 3 회복 4 방어막 수정 끝나면 -1 -1로 초기화해
+player_rigid = False
+player_invinsible = False
 
 spell_img = [pygame.image.load("images/stopwatch.jpg"), pygame.image.load("images/blink.png"),pygame.image.load("images/ghost.png"),pygame.image.load("images/heal.png"),pygame.image.load("images/barrier.png")]
 
@@ -38,7 +43,7 @@ clock = pygame.time.Clock()
 def display_player():
     screen.fill(black)
     #pygame.draw.circle(screen,white,(playerXpos,playerYpos),100)
-    pygame.draw.rect(screen, white, (playerXpos, playerYpos, SIZE, SIZE))
+    pygame.draw.rect(screen, player_color, (playerXpos, playerYpos, SIZE, SIZE))
     pygame.draw.rect(screen, white, (0, 1030, 1920, 20))
     pygame.draw.rect(screen, white, (-20, 0, 20, 1080))
     pygame.draw.rect(screen, white, (1920, 0, 20, 1080))
@@ -58,14 +63,32 @@ def spell_check():
         spell[0] = -1
     if key_event[pygame.K_f] and spell[1]!=-1:
         use_spell(spell[1])
-        spell[0] = -1
-# def use_spell(spell_num):
-#     # if spell_num == 0:
-#     # elif spell_num == 1:
-#     # elif spell_num == 2:
-#     # elif spell_num == 3:
-#     # elif spell_num == 4:
-
+        spell[1] = -1
+def use_spell(spell_num):
+    global player_color, player_rigid, player_speed, hp, player_invincible
+    if spell_num == 0:
+        tmp = player_color
+        player_color = yellow
+        player_rigid = True
+        t1 = datetime.datetime.now()
+        while True:
+            t2 = datetime.datetime.now()
+            if (t2-t1).seconds > 2.5:
+                break
+        player_color = tmp
+        player_rigid = False
+    elif spell_num == 1:
+        key_event = pygame.key.get_pressed()
+        # if key_event[pygame.K_LEFT] and key_event[pygame.K_UP]:
+    elif spell_num == 2:
+        player_speed = 30
+        time.sleep(5)
+        player_speed = 20
+    elif spell_num == 3:
+        hp += 1
+    elif spell_num == 4:
+        player_invincible = True
+        player_color = green
 def vel():
     global playerXpos, playerYpos, velocity, jump_time, up_key_pressed
     key_event = pygame.key.get_pressed()
@@ -124,12 +147,16 @@ while True:
         if event.type == pygame.QUIT:
             sys.exit()
     score += score_tick
+
+    stayinside()
+
     movebykey(player_speed)
+    vel()
+    movebyvelocity(velocity)
+
     display_player()
     display_score()
     display_health()
     display_spell()
-    vel()
-    movebyvelocity(velocity)
-    stayinside()
+    spell_check()
     pygame.display.update()
