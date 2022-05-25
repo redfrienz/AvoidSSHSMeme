@@ -8,7 +8,7 @@ SCREEN_HEIGHT = 1080
 SIZE=50
 velocity=0
 jump_time = 0
-max_jump_time = 2
+max_jump_time = 3
 white = (255,255,255)
 red = (255,0,0)
 black = (0,0,0)
@@ -19,6 +19,7 @@ bgm = pygame.mixer.Sound("audio/Super Mario Galaxy - Buoy Base Galaxy [Remix].mp
 score = 0
 game_font1 = pygame.font.Font("fonts/PressStart2P-vaV7.ttf",50)
 hp = 5
+score_tick = 1
 
 pygame.display.set_caption("설곽 밈 피하기")
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
@@ -82,13 +83,15 @@ def display_score():
 def display_health():
     global hp
     pygame.draw.rect(screen,red,(100,100,50*hp,50))
+
+
 bgm.play(-1)
 while True:
     clock.tick(60)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-    score += 1
+    score += score_tick
     movebykey(20)
     display_player()
     display_score()
