@@ -30,7 +30,7 @@ spell_sound = [pygame.mixer.Sound("audio/stopwatch.mp3"),pygame.mixer.Sound("aud
 score = 0
 game_font1 = pygame.font.Font("fonts/PressStart2P-vaV7.ttf",50)
 hp = 5
-spell = [0,4] #0 초시계 1 점멸 2 유체화 3 회복 4 방어막 수정 끝나면 -1 -1로 초기화해
+spell = [0,1] #0 초시계 1 점멸 2 유체화 3 회복 4 방어막 수정 끝나면 -1 -1로 초기화해
 player_rigid = False
 player_invincible = False
 blink_distance = 300
@@ -76,7 +76,7 @@ def spell_check():
         spell[1] = -1
 def use_spell(spell_num):
     global player_color, player_rigid, player_speed, hp, player_invincible,playerXpos, playerYpos, barrier_activated
-    spell_sound[spell_num].play(1)
+    spell_sound[spell_num].play()
     if spell_num == 0:
         tmp = player_color
         player_color = yellow
