@@ -10,6 +10,7 @@ velocity=0
 jump_time = 0
 max_jump_time = 2
 white = (255,255,255)
+red = (255,0,0)
 black = (0,0,0)
 playerXpos = 800
 playerYpos = 400
@@ -17,6 +18,7 @@ up_key_pressed = False
 bgm = pygame.mixer.Sound("audio/Super Mario Galaxy - Buoy Base Galaxy [Remix].mp3")
 score = 0
 game_font1 = pygame.font.Font("fonts/PressStart2P-vaV7.ttf",50)
+hp = 5
 
 pygame.display.set_caption("설곽 밈 피하기")
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
@@ -77,6 +79,9 @@ def display_score():
     score_img = game_font1.render(score_str,True,white)
     screen.blit(score_img, (score_x,score_y))
 
+def display_health():
+    global hp
+    pygame.draw.rect(screen,red,(100,100,50*hp,50))
 bgm.play(-1)
 while True:
     clock.tick(60)
@@ -87,6 +92,7 @@ while True:
     movebykey(20)
     display_player()
     display_score()
+    display_health()
     vel()
     movebyvelocity(velocity)
     stayinside()
