@@ -12,6 +12,7 @@ white = (255,255,255)
 black = (0,0,0)
 playerXpos = 800
 playerYpos = 400
+up_key_pressed = False
 
 pygame.display.set_caption("설곽 밈 피하기")
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
@@ -39,12 +40,15 @@ def movebykey(speed):
     stayinside()
 
 def vel():
-    global playerXpos, playerYpos, velocity, jump_time
+    global playerXpos, playerYpos, velocity, jump_time, up_key_pressed
     key_event = pygame.key.get_pressed()
     if key_event[pygame.K_UP]:
-         if jump_time >0:
+        if jump_time > 0 and up_key_pressed:
             velocity = 20
-            jump_time = 0
+            jump_time -= 1
+        up_key_pressed = False
+    else:
+        up_key_pressed = True
     velocity -= 1
 
 def movebyvelocity(v):
