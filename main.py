@@ -1,6 +1,7 @@
 import pygame
 import sys
 import time
+import math
 from threading import Thread
 
 pygame.init()
@@ -25,14 +26,16 @@ playerYpos = 400
 player_color = white
 up_key_pressed = False
 bgm = pygame.mixer.Sound("audio/Super Mario Galaxy - Buoy Base Galaxy [Remix].mp3")
+spell_sound = [pygame.mixer.Sound("audio/stopwatch.mp3"),pygame.mixer.Sound("audio/flash.mp3"),pygame.mixer.Sound("audio/heal.mp3")]
 score = 0
 game_font1 = pygame.font.Font("fonts/PressStart2P-vaV7.ttf",50)
 hp = 5
-spell = [2,1] #0 초시계 1 점멸 2 유체화 3 회복 4 방어막 수정 끝나면 -1 -1로 초기화해
+spell = [0,4] #0 초시계 1 점멸 2 유체화 3 회복 4 방어막 수정 끝나면 -1 -1로 초기화해
 player_rigid = False
 player_invincible = False
-
+blink_distance = 300
 spell_img = [pygame.image.load("images/stopwatch.jpg"), pygame.image.load("images/blink.png"),pygame.image.load("images/ghost.png"),pygame.image.load("images/heal.png"),pygame.image.load("images/barrier.png")]
+barrier_activated = False
 
 score_tick = 1
 
@@ -72,19 +75,40 @@ def spell_check():
         sth2.start()
         spell[1] = -1
 def use_spell(spell_num):
-    global player_color, player_rigid, player_speed, hp, player_invincible
+    global player_color, player_rigid, player_speed, hp, player_invincible,playerXpos, playerYpos, barrier_activated
+    spell_sound[spell_num].play(1)
     if spell_num == 0:
         tmp = player_color
         player_color = yellow
         player_rigid = True
         player_invincible = True
+
         time.sleep(2.5)
         player_color = tmp
         player_rigid = False
         player_invincible = False
     elif spell_num == 1:
         key_event = pygame.key.get_pressed()
-        # if key_event[pygame.K_LEFT] and key_event[pygame.K_UP]:
+        if key_event[pygame.K_LEFT] and key_event[pygame.K_UP]:
+            playerXpos -= blink_distance
+            playerYpos -= blink_distance
+        elif key_event[pygame.K_LEFT] and key_event[pygame.K_DOWN]:
+            playerXpos -= blink_distance
+            playerYpos += blink_distance
+        elif key_event[pygame.K_LEFT]:
+            playerXpos -= blink_distance * math.sqrt(2)
+        elif key_event[pygame.K_RIGHT] and key_event[pygame.K_UP]:
+            playerXpos += blink_distance
+            playerYpos -= blink_distance
+        elif key_event[pygame.K_RIGHT] and key_event[pygame.K_DOWN]:
+            playerXpos += blink_distance
+            playerYpos += blink_distance
+        elif key_event[pygame.K_RIGHT]:
+            playerXpos += blink_distance * math.sqrt(2)
+        elif key_event[pygame.K_UP]:
+            playerYpos -= blink_distance * math.sqrt(2)
+        elif key_event[pygame.K_DOWN]:
+            playerYpos += blink_distance * math.sqrt(2)
     elif spell_num == 2:
         player_speed = 40
         time.sleep(5)
@@ -93,7 +117,7 @@ def use_spell(spell_num):
         hp += 1
     elif spell_num == 4:
         player_invincible = True
-        player_color = green
+        barrier_activated = True
 def vel():
     global playerXpos, playerYpos, velocity, jump_time, up_key_pressed
     key_event = pygame.key.get_pressed()
@@ -145,6 +169,10 @@ def display_spell():
     if spell[1] != -1:
         screen.blit(pygame.transform.scale(spell_img[spell[1]],(50,50)),(160,160))
 
+def display_barrier():
+    if barrier_activated:
+        pygame.draw.circle(screen,yellow,(playerXpos+SIZE/2,playerYpos+SIZE/2),50,2)
+
 def add_score():
     global score
     score += score_tick
@@ -171,6 +199,7 @@ if __name__ == '__main__':
         display_score()
         display_health()
         display_spell()
+        display_barrier()
         th1 = Thread(target=spell_check)
         th1.start()
         pygame.display.update()
