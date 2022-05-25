@@ -38,6 +38,7 @@ player_invincible = False
 blink_distance = 300
 spell_img = [pygame.image.load("images/stopwatch.jpg"), pygame.image.load("images/blink.png"),pygame.image.load("images/ghost.png"),pygame.image.load("images/heal.png"),pygame.image.load("images/barrier.png")]
 barrier_activated = False
+spell_item_display = False
 
 score_tick = 1
 
@@ -183,10 +184,38 @@ def check_quit():
         if event.type == pygame.QUIT:
             sys.exit()
 
-# def random_spell():
-#     while True:
-#         #추가바람
-#
+def random_spell():
+    global spell_item_display
+    while True:
+        time.sleep(random.randint(5,10))
+        spell_item_display = True
+        spell_number = random.randint(0,4)
+        spell_x = random.randint(0,1870)
+        spell_y = random.randint(720,920)
+
+        th4 = Thread(target=display_spell_item,args=(spell_number,spell_x,spell_y))
+        th4.start()
+        th5 = Thread(target=check_if_collide_spell_item,args=(spell_number,spell_x,spell_y))
+        th5.start()
+        time.sleep(2)
+        spell_item_display = False
+
+def check_if_collide_spell_item(snum,sx,sy):
+    global playerXpos,playerYpos,spell_item_display
+    while spell_item_display:
+        time.sleep(1/60)
+        if (playerXpos-sx)**2 + (playerYpos-sy)**2 < 10000:
+
+            if spell[0] == -1:
+                spell[0] = snum
+            elif spell[1] == -1:
+                spell[1] = snum
+            spell_item_display = False
+def display_spell_item(spellnum,sx,sy):
+    global spell_item_display
+    while spell_item_display:
+        screen.blit(pygame.transform.scale(spell_img[spellnum],(50,50)),(sx,sy))
+
 # def stage_loop():
 #     while True:
 #         stage_num = random.randint(1,STAGENUM)
@@ -198,8 +227,8 @@ if __name__ == '__main__':
     bgm.play(-1)
     # th2 = Thread(target=stage_loop)
     # th2.start()
-    # th3 = Thread(target=random_spell)
-    # th3.start()
+    th3 = Thread(target=random_spell)
+    th3.start()
     while True:
         clock.tick(60)
 
