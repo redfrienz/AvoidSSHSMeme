@@ -236,8 +236,6 @@ def stayon_platform(n):
         if playerXpos > 500-SIZE and playerXpos < 700 and velocity > 0 and playerYpos < 920:
             playerYpos = 900 -SIZE
             velocity = 0
-
-
 # def stage_loop():
 #     while True:
 #         stage_num = random.randint(1,STAGENUM)
