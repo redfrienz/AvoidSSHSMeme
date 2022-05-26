@@ -55,6 +55,7 @@ def display_player():
     pygame.draw.rect(screen, white, (-20, 0, 20, 1080))
     pygame.draw.rect(screen, white, (1920, 0, 20, 1080))
 
+
 def movebykey(speed):
     global playerXpos, playerYpos, velocity
     key_event = pygame.key.get_pressed()
@@ -218,6 +219,19 @@ def display_spell_item(spellnum,sx,sy):
     while spell_item_display:
         screen.blit(pygame.transform.scale(spell_img[spellnum],(50,50)),(sx,sy))
 
+def draw_platform(n):
+    if n == 1:
+        pygame.draw.rect(screen, white, (500, 900, 200, 20))
+
+def stayon_platform(n):
+    global playerXpos, playerYpos, velocity
+    draw_platform(n)
+    if n == 1:
+        if playerXpos > 500-SIZE and playerXpos < 700 and velocity > 0 and playerYpos < 920:
+            playerYpos = 900 -SIZE
+            velocity = 0
+
+
 # def stage_loop():
 #     while True:
 #         stage_num = random.randint(1,STAGENUM)
@@ -243,11 +257,13 @@ if __name__ == '__main__':
             movebyvelocity(velocity)
 
         stayinside()
+
         display_player()
         display_score()
         display_health()
         display_spell()
         display_barrier()
+        stayon_platform(1)
         th1 = Thread(target=spell_check)
         th1.start()
 
