@@ -38,9 +38,11 @@ player_invincible = False
 blink_distance = 300
 heart_img = pygame.image.load("images/heart.png")
 spell_img = [pygame.image.load("images/stopwatch.jpg"), pygame.image.load("images/blink.png"),pygame.image.load("images/ghost.png"),pygame.image.load("images/heal.png"),pygame.image.load("images/barrier.png")]
+coin_img = [pygame.image.load("images/c"+str(i)+".png") for i in range(1,7)]
 barrier_activated = False
 spell_item_display = False
-
+coin_item_display = False
+coin_number = 1
 score_tick = 1
 
 pygame.display.set_caption("설곽 밈 피하기")
@@ -239,12 +241,48 @@ def stayon_platform(n):
 #
 # def stage(stage_num):
 #     #추가바람
+
+def random_coin():
+    global coin_item_display
+    while True:
+        time.sleep(random.randint(5,10))
+        coin_item_display = True
+        coin_x = random.randint(0,1870)
+        coin_y = random.randint(720,970)
+        th4 = Thread(target=display_coin,args = (coin_x,coin_y))
+        th5 = Thread(target=check_if_collide_coin_item,args = (coin_x,coin_y))
+        th4.start()
+        th5.start()
+        time.sleep(2)
+        coin_item_display = False
+def display_coin(cx,cy):
+    global coin_item_display,coin_number
+    while coin_item_display:
+        screen.blit(pygame.transform.scale(coin_img[coin_number-1],(50,50)),(cx,cy))
+def change_coin_number():
+    global coin_number
+    while True:
+        time.sleep(0.1)
+        coin_number += 1
+        if coin_number>6:
+            coin_number = 1
+def check_if_collide_coin_item(cx,cy):
+    global playerXpos,playerYpos,coin_item_display,score
+    while coin_item_display:
+        time.sleep(1/60)
+        if (playerXpos-cx)**2 + (playerYpos-cy)**2 < 10000:
+            score += 1000
+            coin_item_display = False
 if __name__ == '__main__':
     bgm.play(-1)
     # th2 = Thread(target=stage_loop)
     # th2.start()
     th3 = Thread(target=random_spell)
     th3.start()
+    th0 = Thread(target=change_coin_number)
+    th0.start()
+    th4 = Thread(target=random_coin)
+    th4.start()
     while True:
         clock.tick(60)
 
