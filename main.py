@@ -4,6 +4,7 @@ import time
 import math
 import random
 from threading import Thread
+from pyvidplayer import Video
 
 pygame.init()
 
@@ -42,8 +43,11 @@ coin_img = [pygame.image.load("images/c"+str(i)+".png") for i in range(1,7)]
 barrier_activated = False
 spell_item_display = False
 coin_item_display = False
+coin_death_display = False
 coin_number = 1
 score_tick = 1
+coin_explode_vid = Video("videos/linha uniforme (12).mp4")
+coin_explode_vid.set_size((100,100))
 
 pygame.display.set_caption("설곽 밈 피하기")
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
@@ -256,7 +260,23 @@ def random_coin():
         th4.start()
         th5.start()
         time.sleep(2)
+        if coin_item_display:
+            coin_item_display = False
+            death_coin(coin_x,coin_y)
         coin_item_display = False
+def death_coin(cx,cy):
+    global coin_death_display
+    coin_explode_vid.restart()
+    coin_death_display = True
+    th = Thread(target=coin_death_draw,args=(cx-25,cy-25))
+    th.start()
+    time.sleep(1)
+    coin_death_display = False
+def coin_death_draw(cx,cy):
+    while coin_death_display:
+        time.sleep(1/3600)
+        coin_explode_vid.draw(screen,(cx,cy))
+
 def display_coin(cx,cy):
     global coin_item_display,coin_number
     while coin_item_display:
