@@ -56,6 +56,7 @@ def display_player():
     pygame.draw.rect(screen, white, (0, 1030, 1920, 20))
     pygame.draw.rect(screen, white, (-20, 0, 20, 1080))
     pygame.draw.rect(screen, white, (1920, 0, 20, 1080))
+    pygame.draw.rect(screen, white, (500, 900, 200, 20))
 
 
 def movebykey(speed):
@@ -152,6 +153,9 @@ def stayinside():
         playerXpos = SCREEN_WIDTH-SIZE
     if playerXpos < 0:
         playerXpos = 0
+    if playerXpos > 500 - SIZE and playerXpos < 700 and velocity < 0.1 and playerYpos > 900-SIZE:
+        playerYpos = 900 - SIZE
+        velocity = 0
 
 def display_score():
     global score
@@ -301,7 +305,6 @@ if __name__ == '__main__':
         display_health()
         display_spell()
         display_barrier()
-        stayon_platform(1)
         th1 = Thread(target=spell_check)
         th1.start()
 
