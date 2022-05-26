@@ -36,6 +36,7 @@ spell = [1,0] #0 초시계 1 점멸 2 유체화 3 회복 4 방어막 수정 끝�
 player_rigid = False
 player_invincible = False
 blink_distance = 300
+heart_img = pygame.image.load("images/heart.png")
 spell_img = [pygame.image.load("images/stopwatch.jpg"), pygame.image.load("images/blink.png"),pygame.image.load("images/ghost.png"),pygame.image.load("images/heal.png"),pygame.image.load("images/barrier.png")]
 barrier_activated = False
 spell_item_display = False
@@ -78,7 +79,7 @@ def spell_check():
         spell[1] = -1
 def use_spell(spell_num):
     global player_color, player_rigid, player_speed, hp, player_invincible,playerXpos, playerYpos, barrier_activated
-    spell_sound[spell_num].play()
+    # spell_sound[spell_num].play()
     if spell_num == 0:
         tmp = player_color
         player_color = yellow
@@ -161,7 +162,8 @@ def display_health():
     global hp
     hpx = 100
     for i in range(hp):
-        pygame.draw.rect(screen,red,(hpx,100,50,50))
+        screen.blit(pygame.transform.scale(heart_img,(50,50)),(hpx,100))
+        # pygame.draw.rect(screen,red,(hpx,100,50,50))
         hpx += 60
 
 def display_spell():
@@ -234,7 +236,6 @@ if __name__ == '__main__':
 
         check_quit()
         add_score()
-
 
         if not player_rigid:
             movebykey(player_speed)
