@@ -153,9 +153,17 @@ def stayinside():
         playerXpos = SCREEN_WIDTH-SIZE
     if playerXpos < 0:
         playerXpos = 0
-    if playerXpos > 500 - SIZE and playerXpos < 700 and velocity < 0.1 and playerYpos > 900-SIZE:
-        playerYpos = 900 - SIZE
+
+def stayon_platform():
+    global playerXpos, playerYpos, velocity, jump_time, max_jump_time
+    if playerXpos > 500 and playerXpos < 700-SIZE and playerYpos < 920:
+        playerYpos = 920
         velocity = 0
+    if playerXpos > 500 and playerXpos < 700-SIZE and playerYpos > 900-SIZE:
+        playerYpos = 900-SIZE
+        velocity = 0
+        jump_time = max_jump_time
+
 
 def display_score():
     global score
@@ -196,7 +204,8 @@ def check_quit():
 def random_spell():
     global spell_item_display
     while True:
-        time.sleep(random.randint(5,10))
+        #time.sleep(random.randint(5,10))
+        time.sleep(1)
         spell_item_display = True
         spell_number = random.randint(0,4)
         spell_x = random.randint(0,1870)
@@ -225,17 +234,6 @@ def display_spell_item(spellnum,sx,sy):
     while spell_item_display:
         screen.blit(pygame.transform.scale(spell_img[spellnum],(50,50)),(sx,sy))
 
-def draw_platform(n):
-    if n == 1:
-        pygame.draw.rect(screen, white, (500, 900, 200, 20))
-
-def stayon_platform(n):
-    global playerXpos, playerYpos, velocity
-    draw_platform(n)
-    if n == 1:
-        if playerXpos > 500-SIZE and playerXpos < 700 and velocity > 0 and playerYpos < 920:
-            playerYpos = 900 -SIZE
-            velocity = 0
 
 
 # def stage_loop():
@@ -293,13 +291,14 @@ if __name__ == '__main__':
         check_quit()
         add_score()
 
+        stayon_platform()
         if not player_rigid:
             movebykey(player_speed)
             vel()
             movebyvelocity(velocity)
 
+        stayon_platform()
         stayinside()
-
         display_player()
         display_score()
         display_health()
