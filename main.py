@@ -156,10 +156,10 @@ def stayinside():
 
 def stayon_platform():
     global playerXpos, playerYpos, velocity, jump_time, max_jump_time
-    if playerXpos > 500 and playerXpos < 700-SIZE and playerYpos < 920:
+    if playerXpos > 500-SIZE and playerXpos < 700 and playerYpos < 920 and playerYpos > 920-velocity:
         playerYpos = 920
         velocity = 0
-    if playerXpos > 500 and playerXpos < 700-SIZE and playerYpos > 900-SIZE:
+    if playerXpos > 500-SIZE and playerXpos < 700 and playerYpos > 900-SIZE and playerYpos < 900-SIZE-velocity:
         playerYpos = 900-SIZE
         velocity = 0
         jump_time = max_jump_time
@@ -291,14 +291,15 @@ if __name__ == '__main__':
         check_quit()
         add_score()
 
-        stayon_platform()
+
         if not player_rigid:
             movebykey(player_speed)
             vel()
             movebyvelocity(velocity)
 
-        stayon_platform()
+
         stayinside()
+        stayon_platform()
         display_player()
         display_score()
         display_health()
