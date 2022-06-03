@@ -32,13 +32,15 @@ spell_sound = [pygame.mixer.Sound("audio/stopwatch.mp3"),pygame.mixer.Sound("aud
 score = 0
 game_font1 = pygame.font.Font("fonts/PressStart2P-vaV7.ttf",50)
 hp = 5
+hpcolor = 0
 spell = [1,0] #0 초시계 1 점멸 2 유체화 3 회복 4 방어막 수정 끝나면 -1 -1로 초기화해
 player_rigid = False
 player_invincible = False
 blink_distance = 300
-heart_img = pygame.image.load("images/heart.png")
+heart_img = [pygame.image.load("images/heart.png"), pygame.image.load("images/yellowheart.png"), pygame.image.load("images/heart.png")]
 spell_img = [pygame.image.load("images/stopwatch.jpg"), pygame.image.load("images/blink.png"),pygame.image.load("images/ghost.png"),pygame.image.load("images/heal.png"),pygame.image.load("images/barrier.png")]
 coin_img = [pygame.image.load("images/c"+str(i)+".png") for i in range(1,7)]
+platform = [[500, 900, 200, 20], [800, 800, 200, 20], [800, 600, 100, 20]]
 barrier_activated = False
 spell_item_display = False
 coin_item_display = False
@@ -56,7 +58,8 @@ def display_player():
     pygame.draw.rect(screen, white, (0, 1030, 1920, 20))
     pygame.draw.rect(screen, white, (-20, 0, 20, 1080))
     pygame.draw.rect(screen, white, (1920, 0, 20, 1080))
-    pygame.draw.rect(screen, white, (500, 900, 200, 20))
+    for i in range(len(platform)):
+        pygame.draw.rect(screen, white, platform[i])
 
 
 def movebykey(speed):
@@ -82,7 +85,7 @@ def spell_check():
         sth2.start()
         spell[1] = -1
 def use_spell(spell_num):
-    global player_color, player_rigid, player_speed, hp, player_invincible,playerXpos, playerYpos, barrier_activated
+    global player_color, player_rigid, player_speed, hp, player_invincible,playerXpos, playerYpos, barrier_activated, hpcolor
     # spell_sound[spell_num].play()
     if spell_num == 0:
         tmp = player_color
@@ -125,6 +128,7 @@ def use_spell(spell_num):
     elif spell_num == 4:
         player_invincible = True
         barrier_activated = True
+        hpcolor = 1
 def vel():
     global playerXpos, playerYpos, velocity, jump_time, up_key_pressed
     key_event = pygame.key.get_pressed()
@@ -156,13 +160,11 @@ def stayinside():
 
 def stayon_platform():
     global playerXpos, playerYpos, velocity, jump_time, max_jump_time
-    if playerXpos > 500-SIZE and playerXpos < 700 and playerYpos < 920 and playerYpos > 920-velocity:
-        playerYpos = 920
-        velocity = 0
-    if playerXpos > 500-SIZE and playerXpos < 700 and playerYpos > 900-SIZE and playerYpos < 900-SIZE-velocity:
-        playerYpos = 900-SIZE
-        velocity = 0
-        jump_time = max_jump_time
+    for i in range(len(platform)):
+        if playerXpos > platform[i][0]-SIZE and playerXpos < platform[i][0]+platform[i][2] and playerYpos > platform[i][1]-SIZE and playerYpos < platform[i][1]+10-SIZE-velocity:
+            playerYpos = platform[i][1]-SIZE
+            velocity = 0
+            jump_time = max_jump_time
 
 
 def display_score():
@@ -174,10 +176,10 @@ def display_score():
     screen.blit(score_img, (score_x,score_y))
 
 def display_health():
-    global hp
+    global hp, hpcolor
     hpx = 100
     for i in range(hp):
-        screen.blit(pygame.transform.scale(heart_img,(50,50)),(hpx,100))
+        screen.blit(pygame.transform.scale(heart_img[hpcolor],(50,50)),(hpx,100))
         # pygame.draw.rect(screen,red,(hpx,100,50,50))
         hpx += 60
 
