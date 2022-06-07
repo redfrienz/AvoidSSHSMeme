@@ -37,10 +37,13 @@ spell = [1,0] #0 초시계 1 점멸 2 유체화 3 회복 4 방어막 수정 끝�
 player_rigid = False
 player_invincible = False
 blink_distance = 300
-heart_img = [pygame.image.load("images/heart.png"), pygame.image.load("images/yellowheart.png"), pygame.image.load("images/heart.png")]
+heart_img = [pygame.image.load("images/heart.png"), pygame.image.load("images/yellowheart.png"), pygame.image.load("images/whiteheart.png")]
 spell_img = [pygame.image.load("images/stopwatch.jpg"), pygame.image.load("images/blink.png"),pygame.image.load("images/ghost.png"),pygame.image.load("images/heal.png"),pygame.image.load("images/barrier.png")]
 coin_img = [pygame.image.load("images/c"+str(i)+".png") for i in range(1,7)]
-platform = [[500, 900, 200, 20], [800, 800, 200, 20], [800, 600, 100, 20]]
+platform = [[800, 800, 200, 20], [800, 600, 100, 20]]
+obstacle = [[500, 700, 20, 200]]
+obshit = False
+obsspeed = []
 barrier_activated = False
 spell_item_display = False
 coin_item_display = False
@@ -60,6 +63,8 @@ def display_player():
     pygame.draw.rect(screen, white, (1920, 0, 20, 1080))
     for i in range(len(platform)):
         pygame.draw.rect(screen, white, platform[i])
+    for i in range(len(obstacle)):
+        pygame.draw.rect(screen, red, obstacle[i])
 
 
 def movebykey(speed):
@@ -84,6 +89,7 @@ def spell_check():
         sth2 = Thread(target=use_spell,args=tuple(args2))
         sth2.start()
         spell[1] = -1
+
 def use_spell(spell_num):
     global player_color, player_rigid, player_speed, hp, player_invincible,playerXpos, playerYpos, barrier_activated, hpcolor
     # spell_sound[spell_num].play()
@@ -124,11 +130,13 @@ def use_spell(spell_num):
         time.sleep(5)
         player_speed = 20
     elif spell_num == 3:
-        hp += 1
+        if hp < 5:
+            hp +=1
     elif spell_num == 4:
         player_invincible = True
         barrier_activated = True
         hpcolor = 1
+
 def vel():
     global playerXpos, playerYpos, velocity, jump_time, up_key_pressed
     key_event = pygame.key.get_pressed()
@@ -167,6 +175,7 @@ def stayon_platform():
             jump_time = max_jump_time
 
 
+
 def display_score():
     global score
     score_str = str(score)
@@ -181,6 +190,9 @@ def display_health():
     for i in range(hp):
         screen.blit(pygame.transform.scale(heart_img[hpcolor],(50,50)),(hpx,100))
         # pygame.draw.rect(screen,red,(hpx,100,50,50))
+        hpx += 60
+    for i in range(5-hp):
+        screen.blit(pygame.transform.scale(heart_img[2], (50, 50)), (hpx, 100))
         hpx += 60
 
 def display_spell():
@@ -277,6 +289,36 @@ def check_if_collide_coin_item(cx,cy):
         if (playerXpos-cx)**2 + (playerYpos-cy)**2 < 10000:
             score += 1000
             coin_item_display = False
+
+
+def obstacle_hit():
+    global playerXpos, playerYpos, hp, hpcolor, player_color, obshit
+    for i in range(len(obstacle)):
+        if playerXpos > obstacle[i][0]-SIZE and playerXpos < obstacle[i][0]+obstacle[i][2] and playerYpos > obstacle[i][1]-SIZE and playerYpos < obstacle[i][1]+obstacle[i][3]:
+            if obshit == True:
+                hp += 0
+            elif hpcolor == 1:
+                hpcolor =0
+                obshit = True
+            else:
+                if hp > 0:
+                    hp -= 1
+                    obshit = True
+    if obshit == True:
+        player_color = red
+    if obshit == False:
+        player_color = white
+
+
+
+
+
+
+
+
+
+
+
 if __name__ == '__main__':
     bgm.play(-1)
     # th2 = Thread(target=stage_loop)
@@ -302,6 +344,7 @@ if __name__ == '__main__':
 
         stayinside()
         stayon_platform()
+        obstacle_hit()
         display_player()
         display_score()
         display_health()
