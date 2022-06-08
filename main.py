@@ -40,7 +40,7 @@ blink_distance = 300
 heart_img = [pygame.image.load("images/heart.png"), pygame.image.load("images/yellowheart.png"), pygame.image.load("images/whiteheart.png")]
 spell_img = [pygame.image.load("images/stopwatch.jpg"), pygame.image.load("images/blink.png"),pygame.image.load("images/ghost.png"),pygame.image.load("images/heal.png"),pygame.image.load("images/barrier.png")]
 coin_img = [pygame.image.load("images/c"+str(i)+".png") for i in range(1,7)]
-platform = [[800, 800, 200, 20], [800, 600, 100, 20]]
+platform = [[100, 800, 600, 20], [1320, 800, 600, 20], [250, 600, 300, 20], [1470, 600, 300, 20], [810, 500, 300, 20]]
 obstacle = [[random.randint(0,1900), random.randint(0,500)-300, 20, 20], [random.randint(0,1900), random.randint(0,500)-300, 30, 30], [random.randint(0,1900), random.randint(0,500)-300, 40, 40], [random.randint(0,1900), random.randint(0,500)-300, 50, 50], [random.randint(0,1900), random.randint(0,500)-300, 60, 60]]
 obsspeed = [[random.randint(0,10),0-random.randint(0,10)], [random.randint(0,10),0-random.randint(0,10)], [random.randint(0,10),0-random.randint(0,10)], [random.randint(0,10),0-random.randint(0,10)], [random.randint(0,10),0-random.randint(0,10)]]
 obs_color = red
@@ -100,7 +100,7 @@ def use_spell(spell_num):
         player_rigid = True
         player_invincible = True
 
-        time.sleep(2.5)
+        time.sleep(1.5)
         player_color = tmp
         player_rigid = False
         player_invincible = False
@@ -134,7 +134,6 @@ def use_spell(spell_num):
         if hp < 5:
             hp +=1
     elif spell_num == 4:
-        player_invincible = True
         barrier_activated = True
         hpcolor = 1
 
@@ -293,13 +292,14 @@ def check_if_collide_coin_item(cx,cy):
 
 
 def obstacle_hit():
-    global playerXpos, playerYpos, hp, hpcolor, player_color, obshit, player_invincible, score, invinciblet
+    global playerXpos, playerYpos, hp, hpcolor, player_color, obshit, player_invincible, score, invinciblet, barrier_activated
     for i in range(len(obstacle)):
         if playerXpos > obstacle[i][0]-SIZE and playerXpos < obstacle[i][0]+obstacle[i][2] and playerYpos > obstacle[i][1]-SIZE and playerYpos < obstacle[i][1]+obstacle[i][3]:
             if player_invincible == True:
                 hp += 0
             elif hpcolor == 1:
                 hpcolor =0
+                barrier_activated = False
                 invinciblet = score
                 player_color = red
                 player_invincible = True
@@ -335,6 +335,8 @@ def reset_obstacle():
             obsspeed[i][1] = random.randint(0,5)
 
 
+def end_screen():
+    global score
 
 
 
@@ -358,26 +360,31 @@ if __name__ == '__main__':
         check_quit()
         add_score()
 
+        if hp > 0:
+            if not player_rigid:
+                movebykey(player_speed)
+                vel()
+                movebyvelocity(velocity)
 
-        if not player_rigid:
-            movebykey(player_speed)
-            vel()
-            movebyvelocity(velocity)
+            if hp == 0:
+                tmp = score
+
             obstacle_vel()
             obstacle_movebyvel()
+            reset_obstacle()
+            stayinside()
+            stayon_platform()
+            obstacle_hit()
+            invincible()
+            display_player()
+            display_score()
+            display_health()
+            display_spell()
+            display_barrier()
+            th1 = Thread(target=spell_check)
+            th1.start()
+            pygame.display.update()
 
+        if hp == 0:
+            tmp = score
 
-        reset_obstacle()
-        stayinside()
-        stayon_platform()
-        obstacle_hit()
-        invincible()
-        display_player()
-        display_score()
-        display_health()
-        display_spell()
-        display_barrier()
-        th1 = Thread(target=spell_check)
-        th1.start()
-
-        pygame.display.update()
