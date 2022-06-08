@@ -41,9 +41,10 @@ heart_img = [pygame.image.load("images/heart.png"), pygame.image.load("images/ye
 spell_img = [pygame.image.load("images/stopwatch.jpg"), pygame.image.load("images/blink.png"),pygame.image.load("images/ghost.png"),pygame.image.load("images/heal.png"),pygame.image.load("images/barrier.png")]
 coin_img = [pygame.image.load("images/c"+str(i)+".png") for i in range(1,7)]
 platform = [[800, 800, 200, 20], [800, 600, 100, 20]]
-obstacle = [[500, 700, 20, 200]]
-obshit = False
-obsspeed = []
+obstacle = [[random.randint(0,1900), random.randint(0,500)-300, 20, 20], [random.randint(0,1900), random.randint(0,500)-300, 30, 30], [random.randint(0,1900), random.randint(0,500)-300, 40, 40], [random.randint(0,1900), random.randint(0,500)-300, 50, 50], [random.randint(0,1900), random.randint(0,500)-300, 60, 60]]
+obsspeed = [[random.randint(0,10),0-random.randint(0,10)], [random.randint(0,10),0-random.randint(0,10)], [random.randint(0,10),0-random.randint(0,10)], [random.randint(0,10),0-random.randint(0,10)], [random.randint(0,10),0-random.randint(0,10)]]
+obs_color = red
+invinciblet = -10000
 barrier_activated = False
 spell_item_display = False
 coin_item_display = False
@@ -64,7 +65,7 @@ def display_player():
     for i in range(len(platform)):
         pygame.draw.rect(screen, white, platform[i])
     for i in range(len(obstacle)):
-        pygame.draw.rect(screen, red, obstacle[i])
+        pygame.draw.rect(screen, obs_color, obstacle[i])
 
 
 def movebykey(speed):
@@ -91,7 +92,7 @@ def spell_check():
         spell[1] = -1
 
 def use_spell(spell_num):
-    global player_color, player_rigid, player_speed, hp, player_invincible,playerXpos, playerYpos, barrier_activated, hpcolor
+    global player_color, player_rigid, player_speed, hp, player_invincible,playerXpos, playerYpos, barrier_activated, hpcolor, obs_color
     # spell_sound[spell_num].play()
     if spell_num == 0:
         tmp = player_color
@@ -292,24 +293,46 @@ def check_if_collide_coin_item(cx,cy):
 
 
 def obstacle_hit():
-    global playerXpos, playerYpos, hp, hpcolor, player_color, obshit
+    global playerXpos, playerYpos, hp, hpcolor, player_color, obshit, player_invincible, score, invinciblet
     for i in range(len(obstacle)):
         if playerXpos > obstacle[i][0]-SIZE and playerXpos < obstacle[i][0]+obstacle[i][2] and playerYpos > obstacle[i][1]-SIZE and playerYpos < obstacle[i][1]+obstacle[i][3]:
-            if obshit == True:
+            if player_invincible == True:
                 hp += 0
             elif hpcolor == 1:
                 hpcolor =0
-                obshit = True
+                invinciblet = score
+                player_color = red
+                player_invincible = True
             else:
                 if hp > 0:
                     hp -= 1
-                    obshit = True
-    if obshit == True:
-        player_color = red
-    if obshit == False:
+                    invinciblet = score
+                    player_color = red
+                    player_invincible = True
+
+
+def invincible():
+    global player_color, invinciblet, player_invincible
+    if score == invinciblet +50:
         player_color = white
+        player_invincible = False
 
+def obstacle_vel():
+    for i in range(len(obstacle)):
+        obsspeed[i][1] += -0.3
 
+def obstacle_movebyvel():
+    for i in range(len(obstacle)):
+        obstacle[i][0] += obsspeed[i][0]
+        obstacle[i][1] -= obsspeed[i][1]
+
+def reset_obstacle():
+    for i in range(len(obstacle)):
+        if obstacle[i][0]>1920 or obstacle[i][0]<-20 or obstacle[i][1]>1080:
+            obstacle[i][0] = random.randint(0,1900)
+            obstacle[i][1] = random.randint(0,200)
+            obsspeed[i][0] = random.randint(0,5)
+            obsspeed[i][1] = random.randint(0,5)
 
 
 
@@ -340,11 +363,15 @@ if __name__ == '__main__':
             movebykey(player_speed)
             vel()
             movebyvelocity(velocity)
+            obstacle_vel()
+            obstacle_movebyvel()
 
 
+        reset_obstacle()
         stayinside()
         stayon_platform()
         obstacle_hit()
+        invincible()
         display_player()
         display_score()
         display_health()
