@@ -40,8 +40,9 @@ blink_distance = 300
 heart_img = [pygame.image.load("images/heart.png"), pygame.image.load("images/yellowheart.png"), pygame.image.load("images/whiteheart.png")]
 spell_img = [pygame.image.load("images/stopwatch.jpg"), pygame.image.load("images/blink.png"),pygame.image.load("images/ghost.png"),pygame.image.load("images/heal.png"),pygame.image.load("images/barrier.png")]
 coin_img = [pygame.image.load("images/c"+str(i)+".png") for i in range(1,7)]
+obs_img = [pygame.image.load("images/obs1.png")]
 platform = [[100, 800, 600, 20], [1320, 800, 600, 20], [250, 600, 300, 20], [1470, 600, 300, 20], [810, 500, 300, 20]]
-obstacle = [[random.randint(0,1900), random.randint(0,500)-300, 20, 20], [random.randint(0,1900), random.randint(0,500)-300, 30, 30], [random.randint(0,1900), random.randint(0,500)-300, 40, 40], [random.randint(0,1900), random.randint(0,500)-300, 50, 50], [random.randint(0,1900), random.randint(0,500)-300, 60, 60]]
+obstacle = [[random.randint(0,1900), random.randint(0,500)-300, 110, 210], [random.randint(0,1900), random.randint(0,500)-300, 110, 210], [random.randint(0,1900), random.randint(0,500)-300, 110, 210], [random.randint(0,1900), random.randint(0,500)-300, 110, 210], [random.randint(0,1900), random.randint(0,500)-300, 110, 210]]
 obsspeed = [[random.randint(0,10),0-random.randint(0,10)], [random.randint(0,10),0-random.randint(0,10)], [random.randint(0,10),0-random.randint(0,10)], [random.randint(0,10),0-random.randint(0,10)], [random.randint(0,10),0-random.randint(0,10)]]
 obs_color = red
 invinciblet = -10000
@@ -65,8 +66,7 @@ def display_player():
     for i in range(len(platform)):
         pygame.draw.rect(screen, white, platform[i])
     for i in range(len(obstacle)):
-        pygame.draw.rect(screen, obs_color, obstacle[i])
-
+        screen.blit(pygame.transform.scale(obs_img[0], (obstacle[i][2], obstacle[i][3])), (obstacle[i][0], obstacle[i][1]))
 
 def movebykey(speed):
     global playerXpos, playerYpos, velocity
