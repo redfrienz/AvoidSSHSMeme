@@ -160,6 +160,7 @@ def stayinside():
     if playerYpos > 1030-SIZE:
         playerYpos = 1030-SIZE
         jump_time = max_jump_time
+        velocity = 0
     if playerYpos < 0:
         playerYpos = 0
         velocity = 0
@@ -258,16 +259,16 @@ def stage_loop():
         stage(stage_num)
         time.sleep(30)
 
-def stage(stage_num):
-    if stage_num == 1:
-
-    elif stage_num == 2:
-
-    elif stage_num == 3:
-
-    elif stage_num == 4:
-
-    elif stage_num == 5:
+# def stage(stage_num):
+#     if stage_num == 1:
+#
+#     elif stage_num == 2:
+#
+#     elif stage_num == 3:
+#
+#     elif stage_num == 4:
+#
+#     elif stage_num == 5:
 
 def random_coin():
     global coin_item_display
