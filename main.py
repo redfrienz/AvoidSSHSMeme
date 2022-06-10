@@ -345,9 +345,12 @@ def dead_check():
 def end_screen():
     global score
     pygame.draw.rect(screen, black, [0, 0, 1920, 1080])
+    gameover_str = "GAME OVER"
+    gameover_img = game_font1.render(gameover_str,True,red)
+    screen.blit(gameover_img,(960-25*len(gameover_str),400))
     score_str = str(score)
     score_x = 960 - 25 * len(str(score))
-    score_y = 400
+    score_y = 500
     score_img = game_font1.render(score_str, True, white)
     screen.blit(score_img, (score_x, score_y))
 
