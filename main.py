@@ -321,7 +321,7 @@ def invincible():
 
 def obstacle_vel():
     for i in range(len(obstacle)):
-        obsspeed[i][1] += -0.3
+        obsspeed[i][1] += -0.2
 
 def obstacle_movebyvel():
     for i in range(len(obstacle)):
