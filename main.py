@@ -10,7 +10,7 @@ pygame.init()
 SCREEN_WIDTH = 1920
 SCREEN_HEIGHT = 1080
 SIZE=50
-STAGENUM = 15
+STAGENUM = 5
 velocity=0
 jump_time = 0
 max_jump_time = 2
@@ -252,13 +252,22 @@ def display_spell_item(spellnum,sx,sy):
 
 
 
-# def stage_loop():
-#     while True:
-#         stage_num = random.randint(1,STAGENUM)
-#         stage(stage_num)
-#
-# def stage(stage_num):
-#     #추가바람
+def stage_loop():
+    while True:
+        stage_num = random.randint(1,STAGENUM)
+        stage(stage_num)
+        time.sleep(30)
+
+def stage(stage_num):
+    if stage_num == 1:
+
+    elif stage_num == 2:
+
+    elif stage_num == 3:
+
+    elif stage_num == 4:
+
+    elif stage_num == 5:
 
 def random_coin():
     global coin_item_display
