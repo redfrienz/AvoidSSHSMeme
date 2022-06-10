@@ -355,39 +355,39 @@ def end_screen():
     screen.blit(score_img, (score_x, score_y))
 
     grade_str = "GRADE: "
-    if score >= 10000000:
+    if score >= 1000000:
         grade_str += "GOD"
-    elif score > 5000000:
+    elif score > 500000:
         grade_str += "S+"
-    elif score > 2000000:
+    elif score > 200000:
         grade_str+="S"
-    elif score > 1000000:
+    elif score > 100000:
         grade_str += "S-"
-    elif score>=900000:
+    elif score>=90000:
         grade_str += "A+"
-    elif score>=850000:
+    elif score>=85000:
         grade_str += "A0"
-    elif score>=800000:
+    elif score>=80000:
         grade_str += "A-"
-    elif score>=750000:
+    elif score>=75000:
         grade_str += "B+"
-    elif score>=700000:
+    elif score>=70000:
         grade_str += "B0"
-    elif score>=650000:
+    elif score>=65000:
         grade_str += "B-"
-    elif score>=600000:
+    elif score>=60000:
         grade_str += "C+"
-    elif score>=550000:
+    elif score>=55000:
         grade_str += "C0"
-    elif score>=500000:
+    elif score>=50000:
         grade_str += "C-"
-    elif score>=450000:
+    elif score>=45000:
         grade_str += "D+"
-    elif score>=400000:
+    elif score>=40000:
         grade_str += "D0"
-    elif score>=350000:
+    elif score>=35000:
         grade_str += "D-"
-    elif score>=300000:
+    elif score>=30000:
         grade_str += "E"
     else:
         grade_str += "F"
