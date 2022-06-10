@@ -52,6 +52,7 @@ coin_item_display = False
 coin_number = 1
 score_tick = 1
 game_finish = False
+stop_thread = False
 
 pygame.display.set_caption("설곽 밈 피하기")
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
@@ -218,13 +219,13 @@ def check_quit():
 
 def random_spell():
     global spell_item_display
-    while True:
+    while not game_finish:
         #time.sleep(random.randint(5,10))
         time.sleep(1)
         spell_item_display = True
         spell_number = random.randint(0,4)
         spell_x = random.randint(0,1870)
-        spell_y = random.randint(720,920)
+        spell_y = random.randint(420,620)
 
         th4 = Thread(target=display_spell_item,args=(spell_number,spell_x,spell_y))
         th4.start()
@@ -261,11 +262,11 @@ def display_spell_item(spellnum,sx,sy):
 
 def random_coin():
     global coin_item_display
-    while True:
+    while not game_finish:
         time.sleep(random.randint(5,10))
         coin_item_display = True
         coin_x = random.randint(0,1870)
-        coin_y = random.randint(720,970)
+        coin_y = random.randint(320,620)
         th4 = Thread(target=display_coin,args = (coin_x,coin_y))
         th5 = Thread(target=check_if_collide_coin_item,args = (coin_x,coin_y))
         th4.start()
@@ -278,7 +279,7 @@ def display_coin(cx,cy):
         screen.blit(pygame.transform.scale(coin_img[coin_number-1],(50,50)),(cx,cy))
 def change_coin_number():
     global coin_number
-    while True:
+    while not game_finish:
         time.sleep(0.1)
         coin_number += 1
         if coin_number>6:
@@ -337,9 +338,9 @@ def reset_obstacle():
 
 
 def dead_check():
-    global hp
+    global hp,game_finish
     if hp <= 0:
-        game_finish = False
+        game_finish = True
 
 def end_screen():
     global score
@@ -350,12 +351,45 @@ def end_screen():
     score_img = game_font1.render(score_str, True, white)
     screen.blit(score_img, (score_x, score_y))
 
-
-
-
-
-
-
+    grade_str = "GRADE: "
+    if score >= 10000000:
+        grade_str += "GOD"
+    elif score > 5000000:
+        grade_str += "S+"
+    elif score > 2000000:
+        grade_str+="S"
+    elif score > 1000000:
+        grade_str += "S-"
+    elif score>=900000:
+        grade_str += "A+"
+    elif score>=850000:
+        grade_str += "A0"
+    elif score>=800000:
+        grade_str += "A-"
+    elif score>=750000:
+        grade_str += "B+"
+    elif score>=700000:
+        grade_str += "B0"
+    elif score>=650000:
+        grade_str += "B-"
+    elif score>=600000:
+        grade_str += "C+"
+    elif score>=550000:
+        grade_str += "C0"
+    elif score>=500000:
+        grade_str += "C-"
+    elif score>=450000:
+        grade_str += "D+"
+    elif score>=400000:
+        grade_str += "D0"
+    elif score>=350000:
+        grade_str += "D-"
+    elif score>=300000:
+        grade_str += "E"
+    else:
+        grade_str += "F"
+    grade_img = game_font1.render(grade_str,True,white)
+    screen.blit(grade_img,(960-25*len(grade_str),600))
 
 if __name__ == '__main__':
     bgm.play(-1)
@@ -371,9 +405,9 @@ if __name__ == '__main__':
         clock.tick(60)
 
         check_quit()
-        add_score()
 
         if not game_finish:
+            add_score()
             if not player_rigid:
                 movebykey(player_speed)
                 vel()
@@ -392,6 +426,7 @@ if __name__ == '__main__':
             display_spell()
             display_barrier()
         else:
+
             end_screen()
 
         dead_check()
