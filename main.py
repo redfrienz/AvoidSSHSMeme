@@ -42,8 +42,8 @@ spell_img = [pygame.image.load("images/stopwatch.jpg"), pygame.image.load("image
 coin_img = [pygame.image.load("images/c"+str(i)+".png") for i in range(1,7)]
 obs_img = [pygame.image.load("images/obs1.png")]
 platform = [[100, 800, 600, 20], [1320, 800, 600, 20], [250, 600, 300, 20], [1470, 600, 300, 20], [810, 500, 300, 20]]
-obstacle = [[random.randint(0,1900), random.randint(0,500)-300, 110, 210], [random.randint(0,1900), random.randint(0,500)-300, 110, 210], [random.randint(0,1900), random.randint(0,500)-300, 110, 210], [random.randint(0,1900), random.randint(0,500)-300, 110, 210], [random.randint(0,1900), random.randint(0,500)-300, 110, 210]]
-obsspeed = [[random.randint(0,10),0-random.randint(0,10)], [random.randint(0,10),0-random.randint(0,10)], [random.randint(0,10),0-random.randint(0,10)], [random.randint(0,10),0-random.randint(0,10)], [random.randint(0,10),0-random.randint(0,10)]]
+obstacle = [[random.randint(0,1900), random.randint(0,500), 110, 210] for i in range(5)]
+obsspeed = [[0,0-random.randint(0,15)] for i in range(5)]
 obs_color = red
 invinciblet = -10000
 barrier_activated = False
@@ -51,6 +51,7 @@ spell_item_display = False
 coin_item_display = False
 coin_number = 1
 score_tick = 1
+game_finish = False
 
 pygame.display.set_caption("설곽 밈 피하기")
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
@@ -330,13 +331,25 @@ def reset_obstacle():
     for i in range(len(obstacle)):
         if obstacle[i][0]>1920 or obstacle[i][0]<-20 or obstacle[i][1]>1080:
             obstacle[i][0] = random.randint(0,1900)
-            obstacle[i][1] = random.randint(0,200)
-            obsspeed[i][0] = random.randint(0,5)
-            obsspeed[i][1] = random.randint(0,5)
+            obstacle[i][1] = random.randint(0,500)-300
+            obsspeed[i][0] = 0
+            obsspeed[i][1] = 0-random.randint(0,15)
 
+
+def dead_check():
+    global hp
+    if hp <= 0:
+        game_finish = False
 
 def end_screen():
     global score
+    pygame.draw.rect(screen, black, [0, 0, 1920, 1080])
+    score_str = str(score)
+    score_x = 960 - 25 * len(str(score))
+    score_y = 400
+    score_img = game_font1.render(score_str, True, white)
+    screen.blit(score_img, (score_x, score_y))
+
 
 
 
@@ -360,14 +373,11 @@ if __name__ == '__main__':
         check_quit()
         add_score()
 
-        if hp > 0:
+        if not game_finish:
             if not player_rigid:
                 movebykey(player_speed)
                 vel()
                 movebyvelocity(velocity)
-
-            if hp == 0:
-                tmp = score
 
             obstacle_vel()
             obstacle_movebyvel()
@@ -381,10 +391,13 @@ if __name__ == '__main__':
             display_health()
             display_spell()
             display_barrier()
-            th1 = Thread(target=spell_check)
-            th1.start()
-            pygame.display.update()
+        else:
+            end_screen()
 
-        if hp == 0:
-            tmp = score
+        dead_check()
+        th1 = Thread(target=spell_check)
+        th1.start()
+        pygame.display.update()
+
+
 
