@@ -9,11 +9,11 @@ pygame.init()
 
 SCREEN_WIDTH = 1920
 SCREEN_HEIGHT = 1080
-SIZE=50
+SIZE=20
 STAGENUM = 5
 velocity=0
 jump_time = 0
-max_jump_time = 2
+max_jump_time = 100
 player_speed = 20
 
 white = (255,255,255)
@@ -40,10 +40,11 @@ blink_distance = 300
 heart_img = [pygame.image.load("images/heart.png"), pygame.image.load("images/yellowheart.png"), pygame.image.load("images/whiteheart.png")]
 spell_img = [pygame.image.load("images/stopwatch.jpg"), pygame.image.load("images/blink.png"),pygame.image.load("images/ghost.png"),pygame.image.load("images/heal.png"),pygame.image.load("images/barrier.png")]
 coin_img = [pygame.image.load("images/c"+str(i)+".png") for i in range(1,7)]
-obs_img = [pygame.image.load("images/obs1.png")]
-platform = [[100, 800, 600, 20], [1320, 800, 600, 20], [250, 600, 300, 20], [1470, 600, 300, 20], [810, 500, 300, 20]]
-obstacle = [[random.randint(0,1900), random.randint(0,500), 110, 210] for i in range(5)]
-obsspeed = [[0,0-random.randint(0,15)] for i in range(5)]
+obs_img = [] #[pygame.image.load("images/sagam.png") for i in range(10)]
+platform = [] #[[100, 800, 600, 5], [1320, 800, 600, 5], [250, 600, 300, 5], [1470, 600, 300, 5], [810, 500, 300, 5]]
+obstacle = [] #[[random.randint(0,1900), random.randint(0,500), 100, 100] for i in range(10)]
+obsspeed = [] #[[0,0-random.randint(0,15)] for i in range(10)]
+obsacc = []
 obs_color = red
 invinciblet = -10000
 barrier_activated = False
@@ -53,6 +54,7 @@ coin_number = 1
 score_tick = 1
 game_finish = False
 stop_thread = False
+game_start = False
 
 pygame.display.set_caption("설곽 밈 피하기")
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
@@ -68,7 +70,7 @@ def display_player():
     for i in range(len(platform)):
         pygame.draw.rect(screen, white, platform[i])
     for i in range(len(obstacle)):
-        screen.blit(pygame.transform.scale(obs_img[0], (obstacle[i][2], obstacle[i][3])), (obstacle[i][0], obstacle[i][1]))
+        screen.blit(pygame.transform.scale(obs_img[i], (obstacle[i][2], obstacle[i][3])), (obstacle[i][0], obstacle[i][1]))
 
 def movebykey(speed):
     global playerXpos, playerYpos, velocity
@@ -263,7 +265,7 @@ def stage_loop():
 #     if stage_num == 1:
 #
 #     elif stage_num == 2:
-#
+#  
 #     elif stage_num == 3:
 #
 #     elif stage_num == 4:
@@ -331,7 +333,7 @@ def invincible():
 
 def obstacle_vel():
     for i in range(len(obstacle)):
-        obsspeed[i][1] += -0.2
+        obsspeed[i][1] += -obsacc[i]
 
 def obstacle_movebyvel():
     for i in range(len(obstacle)):
@@ -344,13 +346,17 @@ def reset_obstacle():
             obstacle[i][0] = random.randint(0,1900)
             obstacle[i][1] = random.randint(0,500)-300
             obsspeed[i][0] = 0
-            obsspeed[i][1] = 0-random.randint(0,15)
+            obsspeed[i][1] = 0
 
 
 def dead_check():
     global hp,game_finish
     if hp <= 0:
         game_finish = True
+
+def start_screen():
+    pygame.draw.rect(screen, black, [0, 0, 1920, 1080])
+    screen.blit(pygame.transform.scale(pygame.image.load("images/startbutton.png"), (400, 150)), (760, 600))
 
 def end_screen():
     global score
@@ -418,7 +424,6 @@ if __name__ == '__main__':
         clock.tick(60)
 
         check_quit()
-
         if not game_finish:
             add_score()
             if not player_rigid:
@@ -441,6 +446,7 @@ if __name__ == '__main__':
         else:
 
             end_screen()
+
 
         dead_check()
         th1 = Thread(target=spell_check)
