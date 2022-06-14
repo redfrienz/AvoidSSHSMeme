@@ -262,7 +262,7 @@ def stage_loop():
         stage(0)
         time.sleep(5)
         stage_num = random.randint(1,STAGENUM)
-        obsnumber = random.randint(5,8)
+        obsnumber = random.randint(4,7)
         stage(stage_num)
         time.sleep(25)
 
@@ -279,13 +279,13 @@ def stage(stage_num):
         platform = [[100, 800, 600, 5], [1320, 800, 600, 5], [250, 600, 300, 5], [1470, 600, 300, 5], [810, 500, 300, 5]]
         obstacle = [[random.randint(0,1900), random.randint(0,200), 100, 100] for i in range(obsnumber)]
         obsspeed = [[random.randint(-10,10),0-random.randint(0,15)] for i in range(obsnumber)]
-        obsacc = [0.5 for i in range(obsnumber)]
+        obsacc = [0.25 for i in range(obsnumber)]
     elif stage_num == 2:
         obs_img = [pygame.image.load("images/liwon.jfif") for i in range(obsnumber)]
         platform = [[100, 800, 600, 5], [1320, 800, 600, 5], [250, 600, 300, 5], [1470, 600, 300, 5], [810, 500, 300, 5]]
         obstacle = [[random.randint(0,1900), random.randint(0,200), 100, 100] for i in range(obsnumber)]
         obsspeed = [[random.randint(-10,10),0-random.randint(0,15)] for i in range(obsnumber)]
-        obsacc = [0.5 for i in range(obsnumber)]
+        obsacc = [0.25 for i in range(obsnumber)]
     # elif stage_num == 3:
     #
     # elif stage_num == 4:
