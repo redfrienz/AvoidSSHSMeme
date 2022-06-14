@@ -9,8 +9,8 @@ pygame.init()
 
 SCREEN_WIDTH = 1920
 SCREEN_HEIGHT = 1080
-SIZE=20
-STAGENUM = 5
+SIZE=50
+STAGENUM = 2
 velocity=0
 jump_time = 0
 max_jump_time = 100
@@ -55,6 +55,7 @@ score_tick = 1
 game_finish = False
 stop_thread = False
 game_start = False
+obsnumber = 0
 
 pygame.display.set_caption("설곽 밈 피하기")
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
@@ -256,21 +257,40 @@ def display_spell_item(spellnum,sx,sy):
 
 
 def stage_loop():
+    global obsnumber
     while True:
+        stage(0)
+        time.sleep(5)
         stage_num = random.randint(1,STAGENUM)
+        obsnumber = random.randint(5,8)
         stage(stage_num)
-        time.sleep(30)
+        time.sleep(25)
 
-# def stage(stage_num):
-#     if stage_num == 1:
-#
-#     elif stage_num == 2:
-#  
-#     elif stage_num == 3:
-#
-#     elif stage_num == 4:
-#
-#     elif stage_num == 5:
+def stage(stage_num):
+    global obs_img,platform,obstacle,obsspeed,obsacc
+    if stage_num == 0:
+        obs_img = []
+        platform = []
+        obstacle = []
+        obsspeed = []
+        obsacc = []
+    if stage_num == 1:
+        obs_img = [pygame.image.load("images/sagam.png") for i in range(obsnumber)]
+        platform = [[100, 800, 600, 5], [1320, 800, 600, 5], [250, 600, 300, 5], [1470, 600, 300, 5], [810, 500, 300, 5]]
+        obstacle = [[random.randint(0,1900), random.randint(0,200), 100, 100] for i in range(obsnumber)]
+        obsspeed = [[random.randint(-10,10),0-random.randint(0,15)] for i in range(obsnumber)]
+        obsacc = [0.5 for i in range(obsnumber)]
+    elif stage_num == 2:
+        obs_img = [pygame.image.load("images/liwon.jfif") for i in range(obsnumber)]
+        platform = [[100, 800, 600, 5], [1320, 800, 600, 5], [250, 600, 300, 5], [1470, 600, 300, 5], [810, 500, 300, 5]]
+        obstacle = [[random.randint(0,1900), random.randint(0,200), 100, 100] for i in range(obsnumber)]
+        obsspeed = [[random.randint(-10,10),0-random.randint(0,15)] for i in range(obsnumber)]
+        obsacc = [0.5 for i in range(obsnumber)]
+    # elif stage_num == 3:
+    #
+    # elif stage_num == 4:
+    #
+    # elif stage_num == 5:
 
 def random_coin():
     global coin_item_display
@@ -342,11 +362,11 @@ def obstacle_movebyvel():
 
 def reset_obstacle():
     for i in range(len(obstacle)):
-        if obstacle[i][0]>1920 or obstacle[i][0]<-20 or obstacle[i][1]>1080:
+        if obstacle[i][0]>1920 or obstacle[i][0]<-20 or obstacle[i][1]>1080 :
             obstacle[i][0] = random.randint(0,1900)
             obstacle[i][1] = random.randint(0,500)-300
-            obsspeed[i][0] = 0
-            obsspeed[i][1] = 0
+            obsspeed[i][0] = random.randint(-10,10)
+            obsspeed[i][1] = 0-random.randint(0,15)
 
 
 def dead_check():
@@ -412,8 +432,8 @@ def end_screen():
 
 if __name__ == '__main__':
     bgm.play(-1)
-    # th2 = Thread(target=stage_loop)
-    # th2.start()
+    th2 = Thread(target=stage_loop)
+    th2.start()
     th3 = Thread(target=random_spell)
     th3.start()
     th0 = Thread(target=change_coin_number)
