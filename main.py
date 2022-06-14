@@ -56,6 +56,8 @@ game_finish = False
 stop_thread = False
 game_start = False
 obsnumber = 0
+stage_number = 1
+stage_num_visible = False
 
 pygame.display.set_caption("설곽 밈 피하기")
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
@@ -257,15 +259,21 @@ def display_spell_item(spellnum,sx,sy):
 
 
 def stage_loop():
-    global obsnumber
-    while True:
+    global obsnumber,stage_num_visible,stage_number
+    while not game_finish:
         stage(0)
+        stage_num_visible = True
         time.sleep(5)
+        stage_num_visible = False
         stage_num = random.randint(1,STAGENUM)
         obsnumber = random.randint(4,7)
         stage(stage_num)
         time.sleep(25)
-
+        stage_number += 1
+def display_stagenumber():
+    stage_str = "STAGE: " + str(stage_number)
+    stage_img = game_font1.render(stage_str,True,white)
+    screen.blit(stage_img,(960-25*len(stage_str),490))
 def stage(stage_num):
     global obs_img,platform,obstacle,obsspeed,obsacc
     if stage_num == 0:
@@ -463,6 +471,8 @@ if __name__ == '__main__':
             display_health()
             display_spell()
             display_barrier()
+            if stage_num_visible:
+                display_stagenumber()
         else:
 
             end_screen()
