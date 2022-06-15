@@ -45,6 +45,7 @@ platform = [] #[[100, 800, 600, 5], [1320, 800, 600, 5], [250, 600, 300, 5], [14
 obstacle = [] #[[random.randint(0,1900), random.randint(0,500), 100, 100] for i in range(10)]
 obsspeed = [] #[[0,0-random.randint(0,15)] for i in range(10)]
 obsacc = []
+obsshow = []
 obs_color = red
 invinciblet = -10000
 barrier_activated = False
@@ -72,7 +73,7 @@ def display_player():
     pygame.draw.rect(screen, white, (1920, 0, 20, 1080))
     for i in range(len(platform)):
         pygame.draw.rect(screen, white, platform[i])
-    for i in range(len(obstacle)):
+    for i in obsshow:
         screen.blit(pygame.transform.scale(obs_img[i], (obstacle[i][2], obstacle[i][3])), (obstacle[i][0], obstacle[i][1]))
 
 def movebykey(speed):
@@ -275,25 +276,28 @@ def display_stagenumber():
     stage_img = game_font1.render(stage_str,True,white)
     screen.blit(stage_img,(960-25*len(stage_str),490))
 def stage(stage_num):
-    global obs_img,platform,obstacle,obsspeed,obsacc
+    global obs_img,platform,obstacle,obsspeed,obsacc,obsshow
     if stage_num == 0:
         obs_img = []
         platform = []
         obstacle = []
         obsspeed = []
         obsacc = []
+        obsshow = []
     if stage_num == 1:
-        obs_img = [pygame.image.load("images/sagam.png") for i in range(obsnumber)]
-        platform = [[100, 800, 600, 5], [1320, 800, 600, 5], [250, 600, 300, 5], [1470, 600, 300, 5], [810, 500, 300, 5]]
-        obstacle = [[random.randint(0,1900), random.randint(0,200), 100, 100] for i in range(obsnumber)]
-        obsspeed = [[random.randint(-10,10),0-random.randint(0,15)] for i in range(obsnumber)]
-        obsacc = [0.25 for i in range(obsnumber)]
+        obs_img = [pygame.image.load("images/sagam.png")] + [pygame.image.load("images/sagam1.png"), pygame.image.load("images/sagam2.png")]*10
+        platform = []
+        obstacle = [[810, 0, 300, 300]]+[[random.randint(0, 1220), 0, 700, 150]for i in range(20)]
+        obsspeed = [[0,0]for i in range(21)]
+        obsacc = [0]+[random.randint(10, 20)/100 for i in range(20)]
+        obsshow = [0,1]
     elif stage_num == 2:
-        obs_img = [pygame.image.load("images/liwon.jfif") for i in range(obsnumber)]
-        platform = [[100, 800, 600, 5], [1320, 800, 600, 5], [250, 600, 300, 5], [1470, 600, 300, 5], [810, 500, 300, 5]]
-        obstacle = [[random.randint(0,1900), random.randint(0,200), 100, 100] for i in range(obsnumber)]
-        obsspeed = [[random.randint(-10,10),0-random.randint(0,15)] for i in range(obsnumber)]
-        obsacc = [0.25 for i in range(obsnumber)]
+        obs_img = [pygame.image.load("images/liwon.jfif")]
+        platform = []
+        obstacle = [[810, 0, 300, 300]]
+        obsspeed = [[0, 0]]
+        obsacc = [0]
+        obsshow = [0]
     # elif stage_num == 3:
     #
     # elif stage_num == 4:
@@ -335,7 +339,7 @@ def check_if_collide_coin_item(cx,cy):
 
 def obstacle_hit():
     global playerXpos, playerYpos, hp, hpcolor, player_color, obshit, player_invincible, score, invinciblet, barrier_activated
-    for i in range(len(obstacle)):
+    for i in obsshow:
         if playerXpos > obstacle[i][0]-SIZE and playerXpos < obstacle[i][0]+obstacle[i][2] and playerYpos > obstacle[i][1]-SIZE and playerYpos < obstacle[i][1]+obstacle[i][3]:
             if player_invincible == True:
                 hp += 0
@@ -360,21 +364,20 @@ def invincible():
         player_invincible = False
 
 def obstacle_vel():
-    for i in range(len(obstacle)):
+    for i in obsshow:
         obsspeed[i][1] += -obsacc[i]
 
 def obstacle_movebyvel():
-    for i in range(len(obstacle)):
+    for i in obsshow:
         obstacle[i][0] += obsspeed[i][0]
         obstacle[i][1] -= obsspeed[i][1]
 
 def reset_obstacle():
-    for i in range(len(obstacle)):
+    for i in obsshow:
         if obstacle[i][0]>1920 or obstacle[i][0]<-20 or obstacle[i][1]>1080 :
-            obstacle[i][0] = random.randint(0,1900)
-            obstacle[i][1] = random.randint(0,500)-300
-            obsspeed[i][0] = random.randint(-10,10)
-            obsspeed[i][1] = 0-random.randint(0,15)
+            obsshow.append(max(obsshow)+1)
+            obsshow.remove(i)
+
 
 
 def dead_check():
