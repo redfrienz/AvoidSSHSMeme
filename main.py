@@ -13,7 +13,7 @@ SIZE=50
 STAGENUM = 2
 velocity=0
 jump_time = 0
-max_jump_time = 100
+max_jump_time = 2
 player_speed = 20
 
 white = (255,255,255)
@@ -40,6 +40,8 @@ blink_distance = 300
 heart_img = [pygame.image.load("images/heart.png"), pygame.image.load("images/yellowheart.png"), pygame.image.load("images/whiteheart.png")]
 spell_img = [pygame.image.load("images/stopwatch.jpg"), pygame.image.load("images/blink.png"),pygame.image.load("images/ghost.png"),pygame.image.load("images/heal.png"),pygame.image.load("images/barrier.png")]
 coin_img = [pygame.image.load("images/c"+str(i)+".png") for i in range(1,7)]
+stage1obs_img = [pygame.image.load("images/sagam"+str(i)+".png") for i in range(1,3)]
+stage2obs_img = [pygame.image.load("images/liwon"+str(i)+".png") for i in range(1,5)]
 obs_img = [] #[pygame.image.load("images/sagam.png") for i in range(10)]
 platform = [] #[[100, 800, 600, 5], [1320, 800, 600, 5], [250, 600, 300, 5], [1470, 600, 300, 5], [810, 500, 300, 5]]
 obstacle = [] #[[random.randint(0,1900), random.randint(0,500), 100, 100] for i in range(10)]
@@ -285,19 +287,19 @@ def stage(stage_num):
         obsacc = []
         obsshow = []
     if stage_num == 1:
-        obs_img = [pygame.image.load("images/sagam.png")] + [pygame.image.load("images/sagam1.png"), pygame.image.load("images/sagam2.png")]*10
+        obs_img = [pygame.image.load("images/sagam.png")] + [stage1obs_img[random.randint(0, len(stage1obs_img)-1)]for i in range(20)]
         platform = []
         obstacle = [[810, 0, 300, 300]]+[[random.randint(0, 1220), 0, 700, 150]for i in range(20)]
         obsspeed = [[0,0]for i in range(21)]
         obsacc = [0]+[random.randint(10, 20)/100 for i in range(20)]
         obsshow = [0,1]
     elif stage_num == 2:
-        obs_img = [pygame.image.load("images/liwon.jfif")]
+        obs_img = [pygame.image.load("images/liwon.jfif")] + [stage2obs_img[random.randint(0, len(stage2obs_img) - 1)]for i in range(20)]
         platform = []
-        obstacle = [[810, 0, 300, 300]]
-        obsspeed = [[0, 0]]
-        obsacc = [0]
-        obsshow = [0]
+        obstacle = [[810, 0, 300, 300]] + [[random.randint(0, 1220), 0, 500, 50] for i in range(20)]
+        obsspeed = [[0, 0] for i in range(21)]
+        obsacc = [0] + [random.randint(10, 20) / 100 for i in range(20)]
+        obsshow = [0, 1]
     # elif stage_num == 3:
     #
     # elif stage_num == 4:
