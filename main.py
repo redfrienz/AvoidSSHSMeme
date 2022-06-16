@@ -59,7 +59,7 @@ game_finish = False
 stop_thread = False
 game_start = False
 obsnumber = 0
-stage_number = 1
+stage_number = 10
 stage_num_visible = False
 
 pygame.display.set_caption("설곽 밈 피하기")
@@ -266,19 +266,19 @@ def stage_loop():
     while not game_finish:
         stage(0)
         stage_num_visible = True
-        time.sleep(5)
+        time.sleep(3)
         stage_num_visible = False
         stage_num = random.randint(1,STAGENUM)
         obsnumber = random.randint(4,7)
         stage(stage_num)
-        time.sleep(25)
+        time.sleep(15)
         stage_number += 1
 def display_stagenumber():
     stage_str = "STAGE: " + str(stage_number)
     stage_img = game_font1.render(stage_str,True,white)
     screen.blit(stage_img,(960-25*len(stage_str),490))
 def stage(stage_num):
-    global obs_img,platform,obstacle,obsspeed,obsacc,obsshow
+    global obs_img,platform,obstacle,obsspeed,obsacc,obsshow, stage_number
     if stage_num == 0:
         obs_img = []
         platform = []
@@ -289,17 +289,43 @@ def stage(stage_num):
     if stage_num == 1:
         obs_img = [pygame.image.load("images/sagam.png")] + [stage1obs_img[random.randint(0, len(stage1obs_img)-1)]for i in range(20)]
         platform = []
-        obstacle = [[810, 0, 300, 300]]+[[random.randint(0, 1220), 0, 700, 150]for i in range(20)]
-        obsspeed = [[0,0]for i in range(21)]
-        obsacc = [0]+[random.randint(10, 20)/100 for i in range(20)]
-        obsshow = [0,1]
+        if stage_number <5:
+            obstacle = [[810, 0, 300, 300]] + [[random.randint(0, 1220), 0, 700, 150] for i in range(100)]
+            obsacc = [0] + [random.randint(10, 20) / 100 for i in range(100)]
+            obsshow = [0,1]
+        elif stage_number <10:
+            obstacle = [[810, 0, 300, 300]] + [[random.randint(0, 1220), 0, 500, 107] for i in range(100)]
+            obsacc = [0] + [random.randint(15, 25) / 100 for i in range(100)]
+            obsshow = [0,1,2]
+        elif stage_number <15:
+            obstacle = [[810, 0, 300, 300]] + [[random.randint(0, 1220), 0, 600, 129] for i in range(100)]
+            obsacc = [0] + [random.randint(20, 30) / 100 for i in range(100)]
+            obsshow = [0,1,2]
+        else:
+            obstacle = [[810, 0, 300, 300]] + [[random.randint(0, 1220), 0, 500, 107] for i in range(100)]
+            obsacc = [0] + [random.randint(20, 30) / 100 for i in range(100)]
+            obsshow = [0,1,2,3]
+        obsspeed = [[0,0]for i in range(40)]
     elif stage_num == 2:
         obs_img = [pygame.image.load("images/liwon.jfif")] + [stage2obs_img[random.randint(0, len(stage2obs_img) - 1)]for i in range(20)]
         platform = []
-        obstacle = [[810, 0, 300, 300]] + [[random.randint(0, 1220), 0, 500, 50] for i in range(20)]
+        if stage_number <5:
+            obstacle = [[810, 0, 300, 300]] + [[random.randint(0, 1220), 0, 600, 60] for i in range(100)]
+            obsacc = [0] + [random.randint(10, 20) / 100 for i in range(100)]
+            obsshow = [0, 1]
+        elif stage_number <10:
+            obstacle = [[810, 0, 300, 300]] + [[random.randint(0, 1220), 0, 400, 40] for i in range(100)]
+            obsacc = [0] + [random.randint(15, 25) / 100 for i in range(100)]
+            obsshow = [0, 1, 2]
+        elif stage_number <15:
+            obstacle = [[810, 0, 300, 300]] + [[random.randint(0, 1220), 0, 500, 50] for i in range(100)]
+            obsacc = [0] + [random.randint(20, 30) / 100 for i in range(100)]
+            obsshow = [0, 1, 2]
+        else:
+            obstacle = [[810, 0, 300, 300]] + [[random.randint(0, 1220), 0, 400, 40] for i in range(100)]
+            obsacc = [0] + [random.randint(20, 30) / 100 for i in range(100)]
+            obsshow = [0, 1, 2, 3]
         obsspeed = [[0, 0] for i in range(21)]
-        obsacc = [0] + [random.randint(10, 20) / 100 for i in range(20)]
-        obsshow = [0, 1]
     # elif stage_num == 3:
     #
     # elif stage_num == 4:
