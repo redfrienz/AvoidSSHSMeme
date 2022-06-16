@@ -10,7 +10,7 @@ pygame.init()
 SCREEN_WIDTH = 1920
 SCREEN_HEIGHT = 1080
 SIZE=50
-STAGENUM = 2
+STAGENUM = 4
 velocity=0
 jump_time = 0
 max_jump_time = 2
@@ -42,6 +42,8 @@ spell_img = [pygame.image.load("images/stopwatch.jpg"), pygame.image.load("image
 coin_img = [pygame.image.load("images/c"+str(i)+".png") for i in range(1,7)]
 stage1obs_img = [pygame.image.load("images/sagam"+str(i)+".png") for i in range(1,3)]
 stage2obs_img = [pygame.image.load("images/liwon"+str(i)+".png") for i in range(1,5)]
+stage3obs_img = [pygame.image.load("images/subject"+str(i)+".png") for i in range(1,5)]
+stage4obs_img = [pygame.image.load("images/sshs"+str(i)+".png") for i in range(1,2)]
 obs_img = [] #[pygame.image.load("images/sagam.png") for i in range(10)]
 platform = [] #[[100, 800, 600, 5], [1320, 800, 600, 5], [250, 600, 300, 5], [1470, 600, 300, 5], [810, 500, 300, 5]]
 obstacle = [] #[[random.randint(0,1900), random.randint(0,500), 100, 100] for i in range(10)]
@@ -326,10 +328,46 @@ def stage(stage_num):
             obsacc = [0] + [random.randint(20, 30) / 100 for i in range(80*int(stage_number))]
             obsshow = [0, 1, 2, 3]
         obsspeed = [[0, 0] for i in range(80*int(stage_number))]
-    # elif stage_num == 3:
-    #
-    # elif stage_num == 4:
-    #
+    elif stage_num == 3:
+        obs_img = [stage3obs_img[random.randint(0,len(stage3obs_img)-1)] for i in range(80*int(stage_number))]
+        platform = []
+        if stage_number <5:
+            obstacle = [[random.randint(0, 1220), 0, 100, 100] for i in range(80*int(stage_number))]
+            obsacc = [random.randint(10, 20) / 100 for i in range(80*int(stage_number))]
+            obsshow = [0, 1]
+        elif stage_number <10:
+            obstacle = [[random.randint(0, 1220), 0, 100, 100] for i in range(80*int(stage_number))]
+            obsacc = [random.randint(15, 25) / 100 for i in range(80*int(stage_number))]
+            obsshow = [0, 1, 2]
+        elif stage_number <15:
+            obstacle = [[random.randint(0, 1220), 0, 150, 150] for i in range(80*int(stage_number))]
+            obsacc = [random.randint(20, 30) / 100 for i in range(80*int(stage_number))]
+            obsshow = [0, 1, 2]
+        else:
+            obstacle = [[random.randint(0, 1220), 0, 200, 200] for i in range(80*int(stage_number))]
+            obsacc = [random.randint(20, 30) / 100 for i in range(80*int(stage_number))]
+            obsshow = [0, 1, 2, 3]
+        obsspeed = [[0, 0] for i in range(80 * int(stage_number))]
+    elif stage_num == 4:
+        obs_img = [stage3obs_img[random.randint(0, len(stage4obs_img) - 1)] for i in range(80 * int(stage_number))]
+        platform = []
+        if stage_number < 5:
+            obstacle = [[random.randint(0, 1220), 0, 100, 100] for i in range(80 * int(stage_number))]
+            obsacc = [random.randint(10, 20) / 100 for i in range(80 * int(stage_number))]
+            obsshow = [0, 1]
+        elif stage_number < 10:
+            obstacle = [[random.randint(0, 1220), 0, 100, 100] for i in range(80 * int(stage_number))]
+            obsacc = [random.randint(15, 25) / 100 for i in range(80 * int(stage_number))]
+            obsshow = [0, 1, 2]
+        elif stage_number < 15:
+            obstacle = [[random.randint(0, 1220), 0, 150, 150] for i in range(80 * int(stage_number))]
+            obsacc = [random.randint(20, 30) / 100 for i in range(80 * int(stage_number))]
+            obsshow = [0, 1, 2]
+        else:
+            obstacle = [[random.randint(0, 1220), 0, 200, 200] for i in range(80 * int(stage_number))]
+            obsacc = [random.randint(20, 30) / 100 for i in range(80 * int(stage_number))]
+            obsshow = [0, 1, 2, 3]
+        obsspeed = [[0, 0] for i in range(80 * int(stage_number))]
     # elif stage_num == 5:
 
 def random_coin():
